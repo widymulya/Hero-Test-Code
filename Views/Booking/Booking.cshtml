@@ -1,0 +1,393 @@
+@model Hero_Code_Test.Models.ViewModel
+@{
+    ViewData["Title"] = "Hero";
+
+}
+<h2>@ViewData["Title"]</h2>
+
+<script src="~/js/jquery-1.11.0.min.js"></script>
+<script src="~/js/jquery-ui-1.12.1.min.js"></script> 
+<script src="~/js/datatables.min.js"></script>
+<script src="~/js/moment-with-locales.min.js"></script>
+<script src="~/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">   
+
+    $(document).ready(function () {
+        $("#gvItem").DataTable(
+            {
+                "responsive": true,
+                "processing": true, // for show progress bar
+                "serverSide": false, // for process server side
+                "filter": false, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "pagingType": "full_numbers",
+                "deferRender": true,
+                "language":
+                {
+                    "processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"
+                },
+
+                "columnDefs":
+                [{
+                    "targets": [0],
+                    "orderable": true
+                }],
+                'order': [[0, 'desc']]
+            }
+        );
+        $("[data-toggle=tooltip]").tooltip();
+
+        $('#dtpStart').datetimepicker({ format: 'YYYY-MM-DD' }).on('dp.change', function (e) {
+            if (!e.oldDate || !e.date.isSame(e.oldDate, 'day')) {
+                $(this).data('DateTimePicker').hide();
+            }
+        });
+    });
+
+    function selectItem(Id) {
+
+        @* waitingDialog.show('Please wait..', { dialogSize: 'm', progressType: 'warning' }); setTimeout(function () { waitingDialog.hide(); }, 3000); *@
+
+        document.getElementById("idSelected").value = Id;
+        $("#showSelected").html("<h2>Selected Product: " + Id + "</h2>");             
+    
+    }
+
+    function selectSchedule(sId, dateCheckin, nights)
+    {
+        dateCheckin = dateCheckin + 'T00:00:00'
+        document.getElementById("SchdSelected").value = sId;
+        document.getElementById("dateCheckin").value = dateCheckin;
+        document.getElementById("nights").value = nights;
+
+        $("#showSchedule").html(`<div class="col-sm-4 text-left"><h2>Selected Schedule: ` + sId + `</h2></div><div class="col-sm-8 text-left"><input type="submit" value="Get Price" formaction="GetPrice"/></div>`);  
+
+        @* var formData = new FormData($('form').get(0));
+
+        $.ajax({
+            type: 'POST',
+            url: "/Booking/GetPrice",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                //if (view == "logout")
+                //    window.location.href = "/ONeClaim/Login/Logout";
+                //else
+                //    $("#listItem").html(view);
+
+
+                if (data.Status == 1) {
+                    $("#price").html(data.ViewString);
+                }
+
+            }
+        }); *@
+    }
+
+    
+
+
+</script>
+
+
+<p>Use this area to Complete Pax.</p>
+@using (Html.BeginForm(null, "Booking", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmPax" }))
+{
+    <div class="row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            <div class="col-sm-4 text-left">First Name</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.first, new { id = "txtFirst",Value = Model.PaxData.first, @class = "form-control input-sm" })               
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Last Name</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.last, new { id = "txtLast",Value = Model.PaxData.last, @class = "form-control input-sm" })               
+            </div>
+        </div>
+         <div class="form-group">
+            <div class="col-sm-4 text-left">Email</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.email, new { id = "txtMail",Value = Model.PaxData.email, @class = "form-control input-sm" })               
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Mobile</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.mobile, new { id = "txtMobile",Value = Model.PaxData.mobile, @class = "form-control input-sm" })               
+            </div>
+        </div>
+         <div class="form-group">
+            <div class="col-sm-4 text-left">Age</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.age, new { id = "txtAge",Value = Model.PaxData.age, @class = "form-control input-sm" })               
+            </div>
+        </div>        
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Notes</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.notes, new { id = "txtNotes",Value = Model.PaxData.notes, @class = "form-control input-sm" })               
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Nationality</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.nationalityIso, new { id = "txtNat",Value = Model.PaxData.nationalityIso, @class = "form-control input-sm" })               
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Gender</div>
+            <div class="col-sm-8 text-left">
+                @{                
+               
+                string selectedValue = ViewBag.JenisTrasportSelected == null ? "" : ViewBag.JenisTrasportSelected.ToString();
+
+                @* SelectList sel = new SelectList(Model.ListTransport, "ParamCode", "ParamDisplay", selectedValue);   *@
+
+                List<SelectListItem> sel =               
+                    new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "male" , Value = "0"},
+                            new SelectListItem { Text = "female", Value = "1" }
+                        };
+                }
+                @Html.DropDownListFor(a => a.PaxData.gender, sel, "", new { id = "ddlGender", @class = "form-control input-sm" }) @*, new {@disabled = "disabled", id= "ddlRekening" })*@
+                
+            </div>  
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Ext. Reference</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.externalReference, new { id = "txtExt",Value = Model.PaxData.externalReference, @class = "form-control input-sm" })               
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Address</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.address, new { id = "txtAddress",Value = Model.PaxData.address, @class = "form-control input-sm" })               
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Country</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.country, new { id = "txtCountry",Value = Model.PaxData.country, @class = "form-control input-sm" })               
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-4 text-left">Post Code</div>
+            <div class="col-sm-8 text-left">
+                @Html.TextBoxFor(a => a.PaxData.postcode, new { id = "txtPostCode",Value = Model.PaxData.postcode, @class = "form-control input-sm" })               
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 text-left"></div>
+            <div class="col-sm-8 text-left">
+                @* <input type="submit" value="Add Pax" /> *@
+                <input type="submit" value="Add Pax" formaction="AddPax" />
+                
+            </div>
+        </div>
+
+    </div>
+    </div>
+    <br/>
+
+    <h3 style="font-color:red">@Model.errorMsg</h3>
+
+    <p>Use this area to search & book.</p>
+
+
+    <div class="row">
+        <div class="col-sm-12">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-4 text-left">
+                    @* <input type="text" id="q" name="q" /> *@
+                    @* <input type="submit" value="Search" /> *@
+                    @Html.TextBoxFor(a => a.qSearch, new { id = "txtSearch",Value = Model.qSearch, @class = "form-control input-sm" })   
+                    
+                     
+                </div>
+                <div class="col-sm-2 text-left">
+                    <input type="submit"
+                            value="Search"
+                            formaction="Search" />
+                    @Html.HiddenFor(a => a.idSelected, new { id = "idSelected" })
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    @if (Model.ListSearch != null)
+    {
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table id="gvItem" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Score</th>
+                            <th>Name</th>
+                            <th>Supplier Name</th>
+                            <th>Supplier Product Code</th>
+                            <th>BranchName</th>
+                            <th>Category</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var n = 0; n < Model.ListSearch.Count; n++)
+                        {
+                            <tr>
+                                <td>
+                                    @Model.ListSearch[n].Id.ToString()
+                                    
+                                </td>
+                                <td>@Model.ListSearch[n].Score.ToString()</td>
+                                <td>@Model.ListSearch[n].Name</td>
+                                <td>@Model.ListSearch[n].SupplierName</td>
+                                <td>@Model.ListSearch[n].SupplierProductCode</td>
+                                <td>@Model.ListSearch[n].BranchName</td>
+                                <td>@Model.ListSearch[n].Category</td>
+                                <td>
+                                    <a onclick="selectItem(@Model.ListSearch[n].Id);">
+                                        Select
+                                    </a>
+                                    @* @Html.ActionLink("select", "SelectProduct", "Booking", ); *@
+                                </td>
+                            </tr>
+                        }
+
+                        
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    }
+
+    <br/>
+    <p>Please select Schedule</p>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="showSelected">
+            </div>
+        </div>
+    
+
+        <div class="col-sm-12">
+            <div class="form-group">
+                <div class="col-sm-4 text-left">
+                    <div id="showSelected">
+                    </div>
+                </div>
+                <div class="col-sm-8 text-left">                    
+                </div>               
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 text-left">Start Date</div>
+                <div class="col-sm-2 text-left">
+                    <div class="input-group date" id="dtpStart">
+                        @Html.TextBoxFor(a => a.dateStart, new { @readonly = "readonly", id = "txtStart", Value = Model.dateStart, @class = "form-control input-sm" })
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    </div>
+                </div>
+                <div class="col-sm-4 text-left">
+                    <input type="submit" value="Get Schedule" formaction="GetSchedule" />
+                    @Html.HiddenFor(a => a.SchdSelected, new { id = "SchdSelected" })
+                    @Html.HiddenFor(a => a.dateCheckin, new { id = "dateCheckin" })
+                    @Html.HiddenFor(a => a.nights, new { id = "nights" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+    @if (Model.ListSchedule != null)
+    {
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table id="gvSchedule" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Product Id</th>
+                            <th>Schedule Id</th>
+                            <th>Availability</th>
+                            <th>Available</th>
+                            <th>Cta</th>
+                            <th>Ctd</th>
+                            <th>Min Stay</th>
+                            <th>Max Stay</th>
+                            <th>Stop Sell</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var n = 0; n < Model.ListSchedule.Count; n++)
+                        {
+                            <tr>
+                                <td>
+                                    @Model.ListSchedule[n].start                                    
+                                </td>
+                                <td>@Model.ListSchedule[n].end</td>
+                                <td>@Model.ListSchedule[n].id</td>
+                                <td>@Model.ListSchedule[n].scheduleId</td>
+                                <td>@Model.ListSchedule[n].availability</td>
+                                <td>@Model.ListSchedule[n].available</td>
+                                <td>@Model.ListSchedule[n].cta</td>
+                                <td>@Model.ListSchedule[n].ctd</td>
+                                <td>@Model.ListSchedule[n].minStay</td>
+                                <td>@Model.ListSchedule[n].maxStay</td>
+                                <td>@Model.ListSchedule[n].stopsell</td>
+                                <td>
+                                    <a onclick="selectSchedule(@Model.ListSchedule[n].scheduleId,  @Model.ListSchedule[n].start, @Model.ListSchedule[n].availability);">
+                                        Select
+                                    </a>
+                                    @* @Html.ActionLink("select", "SelectProduct", "Booking", ); *@
+                                </td>
+                            </tr>
+                        }
+
+                        
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    }
+    </div>
+
+    <div class="row">
+        <div class="form-group">
+            <div id="showSchedule">
+
+            </div>
+            @* <div class="col-sm-4 text-left">
+               
+            </div>
+            <div class="col-sm-8 text-left">  
+                <input type="submit" value="Get Price" formaction="GetPrice" />                 
+            </div>                *@
+        </div>
+    </div>
+    
+    <br/>
+    <br/>
+
+
+}
