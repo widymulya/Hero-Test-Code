@@ -10,7 +10,12 @@ namespace Hero_Code_Test.Services
     {
         object SearchProduct(string q);
         object AddPaxData(Models.Pax pax);
-        object GetSchedule(string id, string start, string end);
-        object GetPrice(string id, string dateCheckin, string nights);
+        object GetSchedule(int id, string start, string end);
+        object GetPrice(int id, string dateCheckin, int nights);
+
+        object InputBooking(Models.BookingIn bookData);
+        object InputPayment(Models.PaymentIn payIn, out int responseCode);
+
+        string BookingFinalise(string bookingId);
     }
 }

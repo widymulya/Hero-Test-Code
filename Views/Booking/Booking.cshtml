@@ -42,48 +42,126 @@
                 $(this).data('DateTimePicker').hide();
             }
         });
+
+         $('#dtpEnd').datetimepicker({ format: 'YYYY-MM-DD' }).on('dp.change', function (e) {
+            if (!e.oldDate || !e.date.isSame(e.oldDate, 'day')) {
+                $(this).data('DateTimePicker').hide();
+            }
+        });
+        
     });
+
+    function setDatetimePicker()
+    {
+         $('#dtpStart').datetimepicker({ format: 'YYYY-MM-DD' }).on('dp.change', function (e) {
+            if (!e.oldDate || !e.date.isSame(e.oldDate, 'day')) {
+                $(this).data('DateTimePicker').hide();
+            }
+        });
+
+         $('#dtpEnd').datetimepicker({ format: 'YYYY-MM-DD' }).on('dp.change', function (e) {
+            if (!e.oldDate || !e.date.isSame(e.oldDate, 'day')) {
+                $(this).data('DateTimePicker').hide();
+            }
+        });   
+    }
 
     function selectItem(Id) {
 
         @* waitingDialog.show('Please wait..', { dialogSize: 'm', progressType: 'warning' }); setTimeout(function () { waitingDialog.hide(); }, 3000); *@
 
         document.getElementById("idSelected").value = Id;
-        $("#showSelected").html("<h2>Selected Product: " + Id + "</h2>");             
+        @* $("#showSelected").html("<h2>Selected Product: " + Id + "</h2>");    *@
+        $("#showSelected").html(`
+             <div class="row">
+                <div class="col-sm-12">
+                    <h2>Selected Product: `+Id+`</h2>                             
+                </div>
+            </div>    
+            <br/>
+            <p>Please select Schedule</p>
+            <div class="row">   
+                <div class="col-sm-6">            
+
+                    <div class="form-group">
+                        <div class="col-sm-4 text-left">Start Date</div>
+                        <div class="col-sm-8 text-left">
+                            <div class="input-group date" id="dtpStart">
+                                @Html.TextBoxFor(a => a.dateStart, new { @readonly = "readonly", id = "txtStart", Value = Model.dateStart, @class = "form-control input-sm" })
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-4 text-left">End Date</div>
+                        <div class="col-sm-8 text-left">
+                            <div class="input-group date" id="dtpEnd">
+                                @Html.TextBoxFor(a => a.dateEnd, new { @readonly = "readonly", id = "txtEnd", Value = Model.dateEnd, @class = "form-control input-sm" })
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                        </div>
+                    
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-4 text-left">
+                        
+                        </div>
+                        <div class="col-sm-8 text-left"> 
+                            <input type="submit" value="Get Schedule" formaction="GetSchedule" />                   
+                        </div>              
+                    </div>
+                </div>
+
+            </div> 
+        `)   
+
+        setDatetimePicker();       
     
     }
 
-    function selectSchedule(sId, dateCheckin, nights)
-    {
-        dateCheckin = dateCheckin + 'T00:00:00'
+    //function selectSchedule(sId, dateCheckin, nights)
+    function selectSchedule(sId, dateCheckin)
+    {        
+        dateCheckin = dateCheckin //+ 'T00:00:00'
         document.getElementById("SchdSelected").value = sId;
         document.getElementById("dateCheckin").value = dateCheckin;
-        document.getElementById("nights").value = nights;
+        //document.getElementById("nights").value = nights;
 
-        $("#showSchedule").html(`<div class="col-sm-4 text-left"><h2>Selected Schedule: ` + sId + `</h2></div><div class="col-sm-8 text-left"><input type="submit" value="Get Price" formaction="GetPrice"/></div>`);  
-
-        @* var formData = new FormData($('form').get(0));
-
-        $.ajax({
-            type: 'POST',
-            url: "/Booking/GetPrice",
-            data: formData,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                //if (view == "logout")
-                //    window.location.href = "/ONeClaim/Login/Logout";
-                //else
-                //    $("#listItem").html(view);
-
-
-                if (data.Status == 1) {
-                    $("#price").html(data.ViewString);
-                }
-
-            }
-        }); *@
+        
+        $("#showSchedule").html(`
+             <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-6 text-left">
+                        <h2>Selected Schedule: `+ sId +` </h2>
+                    </div>
+                    <div class="col-sm-6 text-left">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-sm-2 text-left">
+                        Nights
+                    </div>
+                    <div class="col-sm-4 text-left">
+                        @Html.TextBoxFor(a => a.nights, new { id = "txtNights",Value = Model.nights, @class = "form-control input-sm" })                             
+                    </div>     
+                    <div class="col-sm-6 text-left">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 text-left">
+                    
+                    </div>
+                    <div class="col-sm-10 text-left">
+                        <input type="submit" value="Get Price" formaction="GetPrice"/>
+                    </div>
+                </div>
+            </div>
+        `)
+       
     }
 
     
@@ -93,7 +171,7 @@
 
 
 <p>Use this area to Complete Pax.</p>
-@using (Html.BeginForm(null, "Booking", FormMethod.Post, new { enctype = "multipart/form-data", id = "frmPax" }))
+@using (Html.BeginForm(null, "Booking", FormMethod.Post, new { enctype = "multipart/form-data", id = "formAll" }))
 {
     <div class="row">
     <div class="col-sm-8">
@@ -143,10 +221,7 @@
             <div class="col-sm-4 text-left">Gender</div>
             <div class="col-sm-8 text-left">
                 @{                
-               
-                string selectedValue = ViewBag.JenisTrasportSelected == null ? "" : ViewBag.JenisTrasportSelected.ToString();
-
-                @* SelectList sel = new SelectList(Model.ListTransport, "ParamCode", "ParamDisplay", selectedValue);   *@
+                             
 
                 List<SelectListItem> sel =               
                     new List<SelectListItem>
@@ -155,7 +230,7 @@
                             new SelectListItem { Text = "female", Value = "1" }
                         };
                 }
-                @Html.DropDownListFor(a => a.PaxData.gender, sel, "", new { id = "ddlGender", @class = "form-control input-sm" }) @*, new {@disabled = "disabled", id= "ddlRekening" })*@
+                @Html.DropDownListFor(a => a.PaxData.gender, sel, "", new { id = "ddlGender", @class = "form-control input-sm" })
                 
             </div>  
         </div>
@@ -178,7 +253,6 @@
                 @Html.TextBoxFor(a => a.PaxData.country, new { id = "txtCountry",Value = Model.PaxData.country, @class = "form-control input-sm" })               
             </div>
         </div>
-
         <div class="form-group">
             <div class="col-sm-4 text-left">Post Code</div>
             <div class="col-sm-8 text-left">
@@ -193,6 +267,18 @@
                 
             </div>
         </div>
+
+        @Html.HiddenFor(a => a.SchdSelected, new { id = "SchdSelected", Value = Model.SchdSelected })
+        @Html.HiddenFor(a => a.dateCheckin, new { id = "dateCheckin", Value = Model.dateCheckin })
+        @Html.HiddenFor(a => a.bookingId, new { id = "bookingId", Value = Model.bookingId })
+        @Html.HiddenFor(a => a.paymentReceipt, new { id = "paymentReceipt", Value = Model.paymentReceipt })
+        @Html.HiddenFor(a => a.discountPrice, new { id = "discountPrice", Value = Model.discountPrice })
+        @Html.HiddenFor(a => a.idSelected, new { id = "idSelected", Value = Model.idSelected })
+        @Html.HiddenFor(a => a.paxId, new {id = "paxId", Value = Model.paxId})
+        @Html.HiddenFor(a => a.paxName, new {id = "paxName", Value = Model.paxName}) 
+        @Html.HiddenFor(a => a.ticketUrl, new {id = "ticketUrl", Value = Model.ticketUrl}) 
+
+              
 
     </div>
     </div>
@@ -218,7 +304,8 @@
                     <input type="submit"
                             value="Search"
                             formaction="Search" />
-                    @Html.HiddenFor(a => a.idSelected, new { id = "idSelected" })
+                  
+
                 </div>
             </div>
         </div>
@@ -249,14 +336,19 @@
                             <tr>
                                 <td>
                                     @Model.ListSearch[n].Id.ToString()
-                                    
+                                    @Html.HiddenFor(a => a.ListSearch[n].Id, new { Value = Model.ListSearch[n].Id })
                                 </td>
-                                <td>@Model.ListSearch[n].Score.ToString()</td>
-                                <td>@Model.ListSearch[n].Name</td>
-                                <td>@Model.ListSearch[n].SupplierName</td>
-                                <td>@Model.ListSearch[n].SupplierProductCode</td>
-                                <td>@Model.ListSearch[n].BranchName</td>
-                                <td>@Model.ListSearch[n].Category</td>
+                                <td>
+                                    @Model.ListSearch[n].Score.ToString() 
+                                    @Html.HiddenFor(a => a.ListSearch[n].Score, new { Value = Model.ListSearch[n].Score })</td>
+                                <td>
+                                    @Model.ListSearch[n].Name 
+                                    @Html.HiddenFor(a => a.ListSearch[n].Name, new { Value = Model.ListSearch[n].Name }) </td>
+                                <td>
+                                    @Model.ListSearch[n].SupplierName @Html.HiddenFor(a => a.ListSearch[n].SupplierName, new { Value = Model.ListSearch[n].SupplierName })</td>
+                                <td>@Model.ListSearch[n].SupplierProductCode @Html.HiddenFor(a => a.ListSearch[n].SupplierProductCode, new { Value = Model.ListSearch[n].SupplierProductCode })</td>
+                                <td>@Model.ListSearch[n].BranchName @Html.HiddenFor(a => a.ListSearch[n].BranchName, new { Value = Model.ListSearch[n].BranchName })</td>
+                                <td>@Model.ListSearch[n].Category @Html.HiddenFor(a => a.ListSearch[n].Category, new { Value = Model.ListSearch[n].Category })</td>
                                 <td>
                                     <a onclick="selectItem(@Model.ListSearch[n].Id);">
                                         Select
@@ -276,45 +368,60 @@
     }
 
     <br/>
-    <p>Please select Schedule</p>
+   
 
-    <div class="row">
-        <div class="col-sm-12">
-            <div id="showSelected">
+    <div id="showSelected">
+        @if (Model.idSelected > 0)
+        {
+        <div class="row">
+            <div class="col-sm-12">
+                <h2>Selected Product: @Model.idSelected</h2>                             
             </div>
-        </div>
-    
+        </div>    
+        <br/>
+        <p>Please select Schedule</p>
+        <div class="row">   
+            <div class="col-sm-6">            
 
-        <div class="col-sm-12">
-            <div class="form-group">
-                <div class="col-sm-4 text-left">
-                    <div id="showSelected">
+                <div class="form-group">
+                    <div class="col-sm-4 text-left">Start Date</div>
+                    <div class="col-sm-8 text-left">
+                        <div class="input-group date" id="dtpStart">
+                            @Html.TextBoxFor(a => a.dateStart, new { @readonly = "readonly", id = "txtStart", Value = Model.dateStart, @class = "form-control input-sm" })
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div>
                     </div>
+                    
                 </div>
-                <div class="col-sm-8 text-left">                    
-                </div>               
-            </div>
-
-            <div class="form-group">
-                <div class="col-sm-2 text-left">Start Date</div>
-                <div class="col-sm-2 text-left">
-                    <div class="input-group date" id="dtpStart">
-                        @Html.TextBoxFor(a => a.dateStart, new { @readonly = "readonly", id = "txtStart", Value = Model.dateStart, @class = "form-control input-sm" })
-                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <div class="form-group">
+                    <div class="col-sm-4 text-left">End Date</div>
+                    <div class="col-sm-8 text-left">
+                        <div class="input-group date" id="dtpEnd">
+                            @Html.TextBoxFor(a => a.dateEnd, new { @readonly = "readonly", id = "txtEnd", Value = Model.dateEnd, @class = "form-control input-sm" })
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                        </div>
                     </div>
+                
                 </div>
-                <div class="col-sm-4 text-left">
-                    <input type="submit" value="Get Schedule" formaction="GetSchedule" />
-                    @Html.HiddenFor(a => a.SchdSelected, new { id = "SchdSelected" })
-                    @Html.HiddenFor(a => a.dateCheckin, new { id = "dateCheckin" })
-                    @Html.HiddenFor(a => a.nights, new { id = "nights" })
+                <div class="form-group">
+                    <div class="col-sm-4 text-left">
+                    
+                    </div>
+                    <div class="col-sm-8 text-left"> 
+                        <input type="submit" value="Get Schedule" formaction="GetSchedule" />                   
+                    </div>              
                 </div>
             </div>
-        </div>
 
+        </div> 
+        }
     </div>
 
-    <div class="row">
+    <br/> 
+
+  
+
+    
     @if (Model.ListSchedule != null)
     {
         <div class="col-sm-12">
@@ -324,6 +431,7 @@
                         <tr>
                             <th>Start</th>
                             <th>End</th>
+                            <th>Id</th>
                             <th>Product Id</th>
                             <th>Schedule Id</th>
                             <th>Availability</th>
@@ -331,8 +439,7 @@
                             <th>Cta</th>
                             <th>Ctd</th>
                             <th>Min Stay</th>
-                            <th>Max Stay</th>
-                            <th>Stop Sell</th>
+                            <th>Max Stay</th>                            
                             <th></th>
                         </tr>
                     </thead>
@@ -341,22 +448,27 @@
                         {
                             <tr>
                                 <td>
-                                    @Model.ListSchedule[n].start                                    
+                                    @Model.ListSchedule[n].start  
+                                    @Html.HiddenFor(a => a.ListSchedule[n].start, new { Value = Model.ListSchedule[n].start })                                  
                                 </td>
-                                <td>@Model.ListSchedule[n].end</td>
-                                <td>@Model.ListSchedule[n].id</td>
-                                <td>@Model.ListSchedule[n].scheduleId</td>
-                                <td>@Model.ListSchedule[n].availability</td>
-                                <td>@Model.ListSchedule[n].available</td>
-                                <td>@Model.ListSchedule[n].cta</td>
-                                <td>@Model.ListSchedule[n].ctd</td>
-                                <td>@Model.ListSchedule[n].minStay</td>
-                                <td>@Model.ListSchedule[n].maxStay</td>
-                                <td>@Model.ListSchedule[n].stopsell</td>
+                                <td>@Model.ListSchedule[n].end @Html.HiddenFor(a => a.ListSchedule[n].end, new { Value = Model.ListSchedule[n].end })  </td>
+                                <td>@Model.ListSchedule[n].id @Html.HiddenFor(a => a.ListSchedule[n].id, new { Value = Model.ListSchedule[n].id })  </td>
+                                <td>@Model.ListSchedule[n].productId @Html.HiddenFor(a => a.ListSchedule[n].productId, new { Value = Model.ListSchedule[n].productId })  </td>
+                                <td>@Model.ListSchedule[n].scheduleId @Html.HiddenFor(a => a.ListSchedule[n].scheduleId, new { Value = Model.ListSchedule[n].scheduleId })  </td>
+                                <td>@Model.ListSchedule[n].availability @Html.HiddenFor(a => a.ListSchedule[n].availability, new { Value = Model.ListSchedule[n].availability })  </td>
+                                <td>@Model.ListSchedule[n].available @Html.HiddenFor(a => a.ListSchedule[n].available, new { Value = Model.ListSchedule[n].available })  </td>
+                                <td>@Model.ListSchedule[n].cta @Html.HiddenFor(a => a.ListSchedule[n].cta, new { Value = Model.ListSchedule[n].cta })  </td>
+                                <td>@Model.ListSchedule[n].ctd @Html.HiddenFor(a => a.ListSchedule[n].ctd, new { Value = Model.ListSchedule[n].ctd })  </td>
+                                <td>@Model.ListSchedule[n].minStay @Html.HiddenFor(a => a.ListSchedule[n].minStay, new { Value = Model.ListSchedule[n].minStay })  </td>
+                                <td>@Model.ListSchedule[n].maxStay @Html.HiddenFor(a => a.ListSchedule[n].maxStay, new { Value = Model.ListSchedule[n].maxStay })  </td>
+                                @* <td>@Model.ListSchedule[n].stopsell</td> *@
                                 <td>
-                                    <a onclick="selectSchedule(@Model.ListSchedule[n].scheduleId,  @Model.ListSchedule[n].start, @Model.ListSchedule[n].availability);">
+                                    <a onclick="selectSchedule(`@Model.ListSchedule[n].scheduleId.ToString()`, `@Model.ListSchedule[n].start.ToString()`, `@Model.ListSchedule[n].available.ToString()`);">
                                         Select
                                     </a>
+
+                                   
+                                   
                                     @* @Html.ActionLink("select", "SelectProduct", "Booking", ); *@
                                 </td>
                             </tr>
@@ -370,21 +482,118 @@
         </div>
 
     }
+    
+
+    
+    <div id="showSchedule">
+        @if (Model.SchdSelected != null)
+            {
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-6 text-left">
+                            <h2>Selected Schedule: @Model.SchdSelected </h2>
+                        </div>
+                        <div class="col-sm-6 text-left">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-sm-2 text-left">
+                            Nights
+                        </div>
+                        <div class="col-sm-4 text-left">
+                            @Html.TextBoxFor(a => a.nights, new { id = "txtNights",Value = Model.nights, @class = "form-control input-sm" })                             
+                        </div>     
+                        <div class="col-sm-6 text-left">
+                        </div>                      
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 text-left">
+                        
+                        </div>
+                        <div class="col-sm-10 text-left">
+                            <input type="submit" value="Get Price" formaction="GetPrice"/>
+                        </div>
+                    </div>
+                </div>
+            }
+                    
+    </div>
+    
+
+    <div class="row">       
+      
+        @if (Model.discountPrice > 0)
+        {
+            <div class="form-group">
+                <div class="col-sm-6 text-left">
+                    <h2>Special price : @Model.discountPrice.ToString() </h2>
+                </div>
+                <div class="col-sm-6 text-left">                
+                </div> 
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-6 text-left">
+                    <input type="submit" value="Book Now" formaction="SubmitBooking"/>
+                </div>
+                <div class="col-sm-6 text-left">                
+                </div> 
+            </div>
+        }  
+        
     </div>
 
-    <div class="row">
+    <div class="row">  
+        @if(Model.bookingId != null)
+        {      
         <div class="form-group">
-            <div id="showSchedule">
-
+            <div class="col-sm-6 text-left">
+                <h2>Booking Id : @Model.bookingId </h2>
             </div>
-            @* <div class="col-sm-4 text-left">
-               
-            </div>
-            <div class="col-sm-8 text-left">  
-                <input type="submit" value="Get Price" formaction="GetPrice" />                 
-            </div>                *@
+            <div class="col-sm-6 text-left">                
+            </div> 
         </div>
+        <div class="form-group">
+            <div class="col-sm-6 text-left">
+                @{ 
+                List<SelectListItem> pay =               
+                    new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "Cash" , Value = "1"},
+                            new SelectListItem { Text = "Credit Card", Value = "2" },
+                            new SelectListItem { Text = "Bank Transfer", Value = "3" },
+                            new SelectListItem { Text = "FOC", Value = "4" }
+                        };
+                }
+                @Html.DropDownListFor(a => a.paymentMethod, pay, "", new { id = "ddlPayment", @class = "form-control input-sm" })
+            </div>
+            <div class="col-sm-6 text-left">                
+            </div> 
+        </div>
+        <div class="form-group">
+            <div class="col-sm-6 text-left">
+                <input type="submit" value="Confirm Payment" formaction="SubmitPayment"/>
+            </div>
+            <div class="col-sm-6 text-left">                
+            </div> 
+        </div>
+        }
     </div>
+
+    <br/>
+
+    @if(Model.ticketUrl != null)
+    {
+        <div class="form-group">
+            <div class="col-sm-12 text-left">
+                <h2>Find your ticket here: @Model.ticketUrl </h2>
+            </div>
+            
+        </div>
+    }
     
     <br/>
     <br/>

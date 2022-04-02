@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ACER\\Documents\\Widy\\Hero-Test-Code\\Hero-Test-Code.csproj": {}
+    "C:\\Users\\ACER\\Documents\\Widy\\GITHUB\\Hero-Test-Code\\Hero-Test-Code.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ACER\\Documents\\Widy\\Hero-Test-Code\\Hero-Test-Code.csproj": {
+    "C:\\Users\\ACER\\Documents\\Widy\\GITHUB\\Hero-Test-Code\\Hero-Test-Code.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ACER\\Documents\\Widy\\Hero-Test-Code\\Hero-Test-Code.csproj",
+        "projectUniqueName": "C:\\Users\\ACER\\Documents\\Widy\\GITHUB\\Hero-Test-Code\\Hero-Test-Code.csproj",
         "projectName": "Hero-Test-Code",
-        "projectPath": "C:\\Users\\ACER\\Documents\\Widy\\Hero-Test-Code\\Hero-Test-Code.csproj",
+        "projectPath": "C:\\Users\\ACER\\Documents\\Widy\\GITHUB\\Hero-Test-Code\\Hero-Test-Code.csproj",
         "packagesPath": "C:\\Users\\ACER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ACER\\Documents\\Widy\\Hero-Test-Code\\obj\\",
+        "outputPath": "C:\\Users\\ACER\\Documents\\Widy\\GITHUB\\Hero-Test-Code\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
