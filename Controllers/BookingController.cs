@@ -65,12 +65,25 @@ namespace Hero_Code_Test.Controllers
         
         public IActionResult Search(ViewModel model)
         {
-            var o = _service.SearchProduct(model.qSearch);
-            List<SearchOut> lsSearch = new List<SearchOut>();
-            lsSearch = JsonConvert.DeserializeObject<List<SearchOut>>(o.ToString());   
-            model.ListSearch = lsSearch;  
-            model.errorMsg = "";           
-            ModelState.Remove("ListSearch");
+            if(string.IsNullOrWhiteSpace(model.qSearch))
+            {
+                model.vSearch = "please fill out this field";
+               
+            }
+            else
+            {
+                var o = _service.SearchProduct(model.qSearch);
+                List<SearchOut> lsSearch = new List<SearchOut>();
+                lsSearch = JsonConvert.DeserializeObject<List<SearchOut>>(o.ToString());   
+                model.ListSearch = lsSearch;  
+                model.errorMsg = "";        
+                model.vSearch= "";   
+                ModelState.Remove("ListSearch");
+                ModelState.Remove("vSearch");
+            }
+
+             ModelState.Remove("vSearch");
+
             return View("Booking", model);
             
         }       
@@ -100,6 +113,7 @@ namespace Hero_Code_Test.Controllers
         public IActionResult GetPrice(ViewModel model)
         {   
             PriceOut price = new PriceOut();
+            model.dateCheckin = model.dateCheckin.Substring(0,10);
             var o = _service.GetPrice(model.idSelected, model.dateCheckin, model.nights);
             price = JsonConvert.DeserializeObject<PriceOut>(o.ToString());   
             model.Price = price;
@@ -115,8 +129,8 @@ namespace Hero_Code_Test.Controllers
         public IActionResult SubmitBooking(ViewModel model)
         {
             //test
-            model.paxName = "sandi gilang";
-            model.paxId = "85e41cd8-2a66-4903-9583-70f3f0b7fd8b";
+            //model.paxName = "sandi gilang";
+            //model.paxId = "85e41cd8-2a66-4903-9583-70f3f0b7fd8b";
 
             BookingIn bookData = new BookingIn();
             BookingOut bookResult = new BookingOut();

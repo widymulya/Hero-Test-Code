@@ -120,6 +120,11 @@
     
     }
 
+    function ValidateSearch()
+    {
+        Page_ClientValidate('ValSearch');
+    }
+
     //function selectSchedule(sId, dateCheckin, nights)
     function selectSchedule(sId, dateCheckin)
     {        
@@ -296,14 +301,15 @@
                 <div class="col-sm-4 text-left">
                     @* <input type="text" id="q" name="q" /> *@
                     @* <input type="submit" value="Search" /> *@
-                    @Html.TextBoxFor(a => a.qSearch, new { id = "txtSearch",Value = Model.qSearch, @class = "form-control input-sm" })   
+                    @Html.TextBoxFor(a => a.qSearch, new { id = "txtSearch",Value = Model.qSearch, @class = "form-control input-sm"})   
+                    @Html.LabelFor(a => a.vSearch, string.IsNullOrEmpty(Model.vSearch)? "": Model.vSearch, new {@class = "text-danger"})
                     
                      
                 </div>
                 <div class="col-sm-2 text-left">
                     <input type="submit"
                             value="Search"
-                            formaction="Search" />
+                            formaction="Search"/>
                   
 
                 </div>

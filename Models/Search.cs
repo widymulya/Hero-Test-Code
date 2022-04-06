@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace Hero_Code_Test.Models
-{
-    
+{   
 
     public class ViewModel
     {
@@ -23,6 +22,7 @@ namespace Hero_Code_Test.Models
         public string paymentReceipt {get;set;}
 
         public string ticketUrl {get;set;}
+        public string vSearch{get;set;}
 
         public List<SearchOut> ListSearch {get;set;}     
         public Pax PaxData {get;set;}  
@@ -30,7 +30,7 @@ namespace Hero_Code_Test.Models
 
         public PriceOut Price {get;set;}
 
-    }
+    }   
 
     public class SearchOut
     {

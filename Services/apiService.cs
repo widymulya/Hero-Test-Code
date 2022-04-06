@@ -63,7 +63,7 @@ namespace Hero_Code_Test.Services
         public object GetSchedule(int id, string start, string end)
         {
             //test      
-            //id = 29174;
+            id = 29174;
             _req = new RestRequest("schedule/" + id.ToString() + "/" + start + "/" + end , Method.GET);
             _req.AddHeader("apiKey", _apiKey);                   
 
